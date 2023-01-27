@@ -18,6 +18,7 @@ import {
   Stack,
 } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
+import AlertModal from "../Modal/AlertModal";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -47,8 +48,11 @@ const Class = () => {
   const [showAlert, setShowAlert] = React.useState(false);
   const [alertMessage, setAlertMessage] = React.useState(null);
   const [isError, setIsError] = React.useState(false);
+  const [classId, setClassId] = React.useState(null);
+  const [showAlertModal, setShowAlertModal] = React.useState(false);
 
-  const deleteClass = async (classId) => {
+  const deleteClassHandler = async () => {
+    setShowAlertModal(false);
     await Axios({
       method: "delete",
       url: "/deleteClassById",
@@ -113,6 +117,16 @@ const Class = () => {
           {alertMessage}
         </Alert>
       </Snackbar>
+      {showAlertModal && (
+        <AlertModal
+          open={showAlertModal}
+          setOpen={setShowAlertModal}
+          title="Delete Class"
+          content="Are you sure you want to delete this Class?"
+          successButton="Delete"
+          onSuccess={deleteClassHandler}
+        />
+      )}
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 300 }} aria-label="customized table">
           <TableHead>
@@ -150,7 +164,12 @@ const Class = () => {
                 </StyledTableCell>
                 <StyledTableCell>{row.radius}</StyledTableCell>
                 <StyledTableCell>
-                  <Button onClick={() => deleteClass(row._id)}>
+                  <Button
+                    onClick={() => {
+                      setClassId(row._id);
+                      setShowAlertModal(true);
+                    }}
+                  >
                     <DeleteForeverIcon />
                   </Button>
                 </StyledTableCell>

@@ -22,6 +22,7 @@ import {
   Stack,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import AlertModal from "../Modal/AlertModal";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -50,6 +51,8 @@ const Course = () => {
   const [showAlert, setShowAlert] = React.useState(false);
   const [alertMessage, setAlertMessage] = React.useState(null);
   const [isError, setIsError] = React.useState(false);
+  const [courseId, setCourseId] = React.useState(null);
+  const [showAlertModal, setShowAlertModal] = React.useState(false);
 
   const sendAttendance = async (course) => {
     await Axios({
@@ -68,11 +71,12 @@ const Course = () => {
       });
   };
 
-  const deleteCourse = async (course) => {
+  const deleteCourseHandler = async () => {
+    setShowAlertModal(false);
     await Axios({
       method: "delete",
       url: "/deleteCourseById",
-      params: { courseId: course._id },
+      params: { courseId },
     })
       .then((res) => {
         setIsError(false);
@@ -153,6 +157,16 @@ const Course = () => {
           {alertMessage}
         </Alert>
       </Snackbar>
+      {showAlertModal && (
+        <AlertModal
+          open={showAlertModal}
+          setOpen={setShowAlertModal}
+          title="Delete Course"
+          content="Are you sure you want to delete this Course?"
+          successButton="Delete"
+          onSuccess={deleteCourseHandler}
+        />
+      )}
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 300 }} aria-label="customized table">
           <TableHead>
@@ -222,7 +236,12 @@ const Course = () => {
                   </Button>
                 </StyledTableCell>
                 <StyledTableCell>
-                  <Button onClick={() => deleteCourse(row)}>
+                  <Button
+                    onClick={() => {
+                      setCourseId(row._id);
+                      setShowAlertModal(true);
+                    }}
+                  >
                     <DeleteForeverIcon />
                   </Button>
                 </StyledTableCell>

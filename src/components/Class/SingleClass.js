@@ -53,6 +53,10 @@ const SingleCourse = () => {
       setIsLoading(false);
     };
     getClass();
+    const interval = setInterval(() => getClass(), 5000);
+    return () => {
+      clearInterval(interval);
+    };
   }, [classId]);
 
   if (isLoading) {

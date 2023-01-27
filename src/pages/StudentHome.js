@@ -127,6 +127,10 @@ const StudentHome = () => {
   };
   React.useEffect(() => {
     getCourses();
+    const interval = setInterval(() => getCourses(), 4000);
+    return () => {
+      clearInterval(interval);
+    };
   }, []);
 
   if (isLoading) {

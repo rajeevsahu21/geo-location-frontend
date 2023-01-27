@@ -59,7 +59,6 @@ const Home = () => {
   const fileChangeHandler = async (event) => {
     const fileUploaded = event.target.files[0];
     const fileExt = fileUploaded.name.split(".").pop();
-    console.log(fileExt, courseId);
     if (fileExt !== "csv" && fileExt !== "xlsx") {
       setIsError(true);
       setShowAlert(true);
