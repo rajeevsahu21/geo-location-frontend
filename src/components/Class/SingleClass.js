@@ -92,6 +92,7 @@ const SingleCourse = () => {
         <Table sx={{ minWidth: 300 }} aria-label="customized table">
           <TableHead>
             <TableRow>
+              <StyledTableCell sx={{ fontWeight: 700 }}>S.No.</StyledTableCell>
               <StyledTableCell sx={{ fontWeight: 700 }}>
                 Student Name
               </StyledTableCell>
@@ -101,11 +102,12 @@ const SingleCourse = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {students.map((row) => (
+            {students.map((row, index) => (
               <StyledTableRow key={row._id}>
-                <StyledTableCell component="th" scope="row">
-                  {row.name}
+                <StyledTableCell width={5} component="th" scope="row">
+                  {index + 1}.
                 </StyledTableCell>
+                <StyledTableCell>{row.name}</StyledTableCell>
                 <StyledTableCell align="right">
                   {row.registrationNo}
                 </StyledTableCell>
