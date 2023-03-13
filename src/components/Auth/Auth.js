@@ -16,6 +16,10 @@ import Container from "@mui/material/Container";
 import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
 
 import Axios from "../../api";
 import Modal from "../Modal/Modal";
@@ -48,6 +52,7 @@ export default function Auth() {
   const [showSuccess, setShowSuccess] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
   const [email, setEmail] = React.useState("");
+  const [role, setRole] = React.useState("teacher");
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -60,7 +65,8 @@ export default function Auth() {
           name: `${data.get("firstName").trim()} ${data
             .get("lastName")
             .trim()}`,
-          role: "teacher",
+          role: role,
+          registrationNo: role === "student" ? data.get("registrationNo") : "",
         }
       : { email: data.get("email"), password: data.get("password") };
     await Axios({
@@ -125,21 +131,22 @@ export default function Auth() {
 
   React.useEffect(() => {
     /* global google */
-    if (window.google && localStorage.getItem("token") === null) {
+    if (window.google) {
       google.accounts.id.initialize({
         client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
         callback: handleGoogle,
       });
 
-      // google.accounts.id.renderButton(document.getElementById("googleDiv"), {
-      //   // type: "standard",
-      //   theme: "filled_black",
-      //   // size: "small",
-      //   text: "continue_with",
-      //   shape: "pill",
-      // });
-
-      google.accounts.id.prompt();
+      google.accounts.id.renderButton(document.getElementById("googleDiv"), {
+        type: "standard",
+        theme: "filled_blue",
+        size: "large",
+        text: "continue_with",
+        shape: "rectangular",
+      });
+      if (localStorage.getItem("token") === null) {
+        google.accounts.id.prompt();
+      }
     }
   }, []);
 
@@ -186,6 +193,25 @@ export default function Auth() {
             onSubmit={handleSubmit}
             sx={{ mt: 3 }}
           >
+            {isSignUp && (
+              <Box sx={{ minWidth: 120, mb: 2 }}>
+                <FormControl fullWidth required>
+                  <InputLabel id="demo-simple-select-label">
+                    SignUp As
+                  </InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={role}
+                    label="SignUp As"
+                    onChange={(e) => setRole(e.target.value)}
+                  >
+                    <MenuItem value={"student"}>Student</MenuItem>
+                    <MenuItem value={"teacher"}>Teacher</MenuItem>
+                  </Select>
+                </FormControl>
+              </Box>
+            )}
             <Grid container spacing={2}>
               {isSignUp && (
                 <Grid item xs={12} sm={6}>
@@ -209,6 +235,19 @@ export default function Auth() {
                     label="Last Name"
                     name="lastName"
                     autoComplete="family-name"
+                  />
+                </Grid>
+              )}
+              {isSignUp && role === "student" && (
+                <Grid item xs={12}>
+                  <TextField
+                    required
+                    fullWidth
+                    id="registrationNo"
+                    label="Registration No."
+                    name="registrationNo"
+                    autoComplete="text"
+                    type="text"
                   />
                 </Grid>
               )}
@@ -263,6 +302,13 @@ export default function Auth() {
                 "Sign In"
               )}
             </Button>
+            <div
+              id="googleDiv"
+              style={{
+                display: "flex",
+                justifyContent: "center",
+              }}
+            ></div>
             <Grid container justifyContent="flex-end">
               {!isSignUp && (
                 <Grid item xs>
