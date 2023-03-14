@@ -48,12 +48,14 @@ const StudentHome = () => {
   const [alertMessage, setAlertMessage] = React.useState(null);
   const [isError, setIsError] = React.useState(false);
   const [courseCode, setCourseCode] = React.useState("");
+  const [markBtn, setMarkBtn] = React.useState(false);
   const [showEnrollCourseModal, setShowEnrollCourseModal] =
     React.useState(false);
 
   const markAttendanceHandler = async (courseId) => {
     navigator.geolocation.getCurrentPosition(
       async (position) => {
+        setMarkBtn(true);
         await Axios({
           method: "post",
           url: "/markAttendance",
@@ -71,6 +73,7 @@ const StudentHome = () => {
             setAlertMessage(res.data.message);
           })
           .catch((err) => {
+            setMarkBtn(false);
             setIsError(true);
             setShowAlert(true);
             setAlertMessage(err.response.data.message);
@@ -195,7 +198,7 @@ const StudentHome = () => {
                 </StyledTableCell>
                 <StyledTableCell>
                   <Button
-                    disabled={row.activeClass ? false : true}
+                    disabled={markBtn ? true : row.activeClass ? false : true}
                     variant="contained"
                     onClick={() => {
                       markAttendanceHandler(row._id);
