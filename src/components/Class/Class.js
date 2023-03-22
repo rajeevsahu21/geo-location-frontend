@@ -150,7 +150,7 @@ const Class = () => {
             {classes.map((row) => (
               <StyledTableRow key={row._id}>
                 <StyledTableCell component="th" scope="row">
-                  {new Date(row.createdDate).toLocaleString("en-GB")}
+                  {new Date(row.createdAt).toLocaleString("en-GB")}
                 </StyledTableCell>
                 <StyledTableCell>{row.active ? "Yes" : "No"}</StyledTableCell>
                 <StyledTableCell>
