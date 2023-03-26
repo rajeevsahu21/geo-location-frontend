@@ -16,10 +16,6 @@ import Container from "@mui/material/Container";
 import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
 
 import Axios from "../../api";
 import Modal from "../Modal/Modal";
@@ -52,7 +48,6 @@ export default function Auth() {
   const [showSuccess, setShowSuccess] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
   const [email, setEmail] = React.useState("");
-  const [role, setRole] = React.useState("teacher");
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -65,8 +60,6 @@ export default function Auth() {
           name: `${data.get("firstName").trim()} ${data
             .get("lastName")
             .trim()}`,
-          role: role,
-          registrationNo: role === "student" ? data.get("registrationNo") : "",
         }
       : { email: data.get("email"), password: data.get("password") };
     await Axios({
@@ -75,14 +68,19 @@ export default function Auth() {
       data: requestbody,
     })
       .then((res) => {
-        localStorage.setItem("token", res.data.token);
-        localStorage.setItem("email", res.data.user.email);
-        localStorage.setItem("name", res.data.user.name);
-        localStorage.setItem("role", res.data.user.role);
-        localStorage.setItem("profile", res.data.user?.profileImage);
-        setTimeout(() => {
-          window.location.reload();
-        }, 1000);
+        if (res.data.user) {
+          localStorage.setItem("token", res.data.token);
+          localStorage.setItem("email", res.data.user.email);
+          localStorage.setItem("name", res.data.user.name);
+          localStorage.setItem("role", res.data.user.role);
+          localStorage.setItem("profile", res.data.user?.profileImage);
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
+        } else {
+          setShowSuccess(res.data.message);
+          setIsSignUp(false);
+        }
       })
       .catch((err) => {
         console.error(err);
@@ -193,25 +191,6 @@ export default function Auth() {
             onSubmit={handleSubmit}
             sx={{ mt: 3 }}
           >
-            {isSignUp && (
-              <Box sx={{ minWidth: 120, mb: 2 }}>
-                <FormControl fullWidth required>
-                  <InputLabel id="demo-simple-select-label">
-                    SignUp As
-                  </InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={role}
-                    label="SignUp As"
-                    onChange={(e) => setRole(e.target.value)}
-                  >
-                    <MenuItem value={"student"}>Student</MenuItem>
-                    <MenuItem value={"teacher"}>Teacher</MenuItem>
-                  </Select>
-                </FormControl>
-              </Box>
-            )}
             <Grid container spacing={2}>
               {isSignUp && (
                 <Grid item xs={12} sm={6}>
@@ -238,19 +217,7 @@ export default function Auth() {
                   />
                 </Grid>
               )}
-              {isSignUp && role === "student" && (
-                <Grid item xs={12}>
-                  <TextField
-                    required
-                    fullWidth
-                    id="registrationNo"
-                    label="Registration No."
-                    name="registrationNo"
-                    autoComplete="text"
-                    type="text"
-                  />
-                </Grid>
-              )}
+
               <Grid item xs={12}>
                 <TextField
                   required
