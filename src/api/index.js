@@ -5,4 +5,16 @@ const Axios = axios.create({
   headers: { "x-access-token": localStorage.getItem("token") },
 });
 
+Axios.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const { status } = error.response;
+    if (status === 401) {
+      localStorage.clear();
+      window.location = "/";
+    }
+    return Promise.reject(error);
+  }
+);
+
 export default Axios;
