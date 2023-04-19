@@ -188,7 +188,7 @@ const StudentHome = () => {
               <StyledTableCell sx={{ fontWeight: 700 }}>
                 Course Name
               </StyledTableCell>
-              <StyledTableCell sx={{ fontWeight: 700 }}>
+              <StyledTableCell sx={{ fontWeight: 700 }} align="right">
                 Mark Attendance
               </StyledTableCell>
             </TableRow>
@@ -199,7 +199,7 @@ const StudentHome = () => {
                 <StyledTableCell component="th" scope="row">
                   {row.courseName}
                 </StyledTableCell>
-                <StyledTableCell>
+                <StyledTableCell align="right">
                   <Button
                     disabled={markBtn ? true : row.activeClass ? false : true}
                     variant="contained"
@@ -215,7 +215,7 @@ const StudentHome = () => {
           </TableBody>
         </Table>
       </TableContainer>
-      <Box sx={{ position: "absolute", right: "40px", bottom: "40px" }}>
+      <Box sx={{ position: "fixed", right: "40px", bottom: "40px" }}>
         <Fab
           onClick={() => setShowEnrollCourseModal(true)}
           color="primary"

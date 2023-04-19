@@ -329,7 +329,7 @@ const Home = () => {
           </TableBody>
         </Table>
       </TableContainer>
-      <Box sx={{ position: "absolute", right: "40px", bottom: "40px" }}>
+      <Box sx={{ position: "fixed", right: "40px", bottom: "40px" }}>
         <Fab
           onClick={() => setShowCourseModal(true)}
           color="primary"

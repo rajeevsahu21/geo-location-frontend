@@ -100,6 +100,7 @@ const SingleCourse = () => {
   const [showAlert, setShowAlert] = React.useState(false);
   const [alertMessage, setAlertMessage] = React.useState(null);
   const [isError, setIsError] = React.useState(false);
+  const [isLoaded, setIsLoaded] = React.useState(false);
 
   const getClass = async () => {
     await Axios({ url: "/class/students", params: { classId } })
@@ -112,6 +113,7 @@ const SingleCourse = () => {
         setAlertMessage(err.response.data.message);
       });
     setIsLoading(false);
+    setIsLoaded(true);
   };
 
   const updateClassHandler = async (_id, present) => {
@@ -208,9 +210,20 @@ const SingleCourse = () => {
           </TableBody>
         </Table>
       </TableContainer>
-      <Box sx={{ position: "absolute", right: "40px", bottom: "40px" }}>
-        <Fab onClick={() => getClass()} color="primary" aria-label="add">
-          <ReplayIcon />
+      <Box sx={{ position: "fixed", right: "40px", bottom: "40px" }}>
+        <Fab
+          onClick={() => {
+            getClass();
+            setIsLoaded(false);
+          }}
+          color="primary"
+          aria-label="add"
+        >
+          {isLoaded ? (
+            <ReplayIcon />
+          ) : (
+            <CircularProgress size={30} style={{ color: "#fff" }} />
+          )}
         </Fab>
       </Box>
     </Stack>
