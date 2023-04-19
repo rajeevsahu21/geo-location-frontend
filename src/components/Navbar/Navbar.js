@@ -13,8 +13,10 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import PersonPinIcon from "@mui/icons-material/PersonPin";
 import { useNavigate } from "react-router-dom";
+import AuthContext from "../../store/auth-context";
 
 const Navbar = () => {
+  const authCtx = React.useContext(AuthContext);
   const navigate = useNavigate();
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -35,16 +37,22 @@ const Navbar = () => {
   };
 
   const handleNavigate = () => {
-    localStorage.getItem("role") === "teacher"
+    authCtx.user.role === "teacher"
       ? navigate("/courses")
-      : navigate("/");
+      : navigate("/messages");
   };
 
   return (
     <AppBar position="sticky">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <PersonPinIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
+          <PersonPinIcon
+            sx={{
+              display: { xs: "none", md: "flex" },
+              mr: 1,
+              cursor: "pointer",
+            }}
+          />
           <Typography
             variant="h6"
             noWrap
@@ -52,6 +60,7 @@ const Navbar = () => {
             sx={{
               mr: 2,
               display: { xs: "none", md: "flex" },
+              cursor: "pointer",
               fontFamily: "monospace",
               fontWeight: 700,
               letterSpacing: ".3rem",
@@ -97,7 +106,9 @@ const Navbar = () => {
                   handleNavigate();
                 }}
               >
-                <Typography textAlign="center">Courses</Typography>
+                <Typography textAlign="center">
+                  {authCtx.user.role === "teacher" ? "Courses" : "Messages"}
+                </Typography>
               </MenuItem>
             </Menu>
           </Box>
@@ -124,7 +135,7 @@ const Navbar = () => {
               onClick={handleNavigate}
               sx={{ my: 2, color: "white", display: "block" }}
             >
-              Courses
+              {authCtx.user.role === "teacher" ? "Courses" : "Messages"}
             </Button>
           </Box>
 
@@ -132,8 +143,8 @@ const Navbar = () => {
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar
-                  alt={localStorage.getItem("name")}
-                  src={localStorage.getItem("profile")}
+                  alt={authCtx.user?.name}
+                  src={authCtx.user?.profileImage}
                 />
               </IconButton>
             </Tooltip>
@@ -159,8 +170,7 @@ const Navbar = () => {
               <MenuItem
                 onClick={() => {
                   navigate("/");
-                  localStorage.clear();
-                  window.location.reload();
+                  authCtx.onLogout();
                 }}
               >
                 <Typography textAlign="center">Logout</Typography>

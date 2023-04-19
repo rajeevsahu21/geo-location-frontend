@@ -8,7 +8,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import Axios from "../../api";
+import useAxios from "../../api";
 import {
   Alert,
   Box,
@@ -41,6 +41,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 const Class = () => {
+  const Axios = useAxios();
   const navigate = useNavigate();
   const { courseId } = useParams();
   const [classes, setClasses] = React.useState([]);
@@ -93,7 +94,9 @@ const Class = () => {
       <Box
         sx={{
           display: "flex",
+          height: "90vh",
           justifyContent: "center",
+          alignItems: "center",
         }}
       >
         <CircularProgress />

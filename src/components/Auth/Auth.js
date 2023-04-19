@@ -17,8 +17,9 @@ import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
-import Axios from "../../api";
+import useAxios from "../../api";
 import Modal from "../Modal/Modal";
+import AuthContext from "../../store/auth-context";
 
 function Copyright(props) {
   return (
@@ -41,6 +42,8 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function Auth() {
+  const Axios = useAxios();
+  const authCtx = React.useContext(AuthContext);
   const [isSignUp, setIsSignUp] = React.useState(false);
   const [showPassword, setShowPassword] = React.useState(false);
   const [showError, setShowError] = React.useState(false);
@@ -69,14 +72,7 @@ export default function Auth() {
     })
       .then((res) => {
         if (res.data.user) {
-          localStorage.setItem("token", res.data.token);
-          localStorage.setItem("email", res.data.user.email);
-          localStorage.setItem("name", res.data.user.name);
-          localStorage.setItem("role", res.data.user.role);
-          localStorage.setItem("profile", res.data.user?.profileImage);
-          setTimeout(() => {
-            window.location.reload();
-          }, 1000);
+          authCtx.onLogin(res.data.token, res.data.user);
         } else {
           setShowSuccess(res.data.message);
           setIsSignUp(false);
@@ -94,14 +90,7 @@ export default function Auth() {
       credential: google.credential,
     })
       .then((res) => {
-        localStorage.setItem("token", res.data.token);
-        localStorage.setItem("name", res.data.user.name);
-        localStorage.setItem("email", res.data.user.email);
-        localStorage.setItem("role", res.data.user.role);
-        localStorage.setItem("profile", res.data.user?.profileImage);
-        setTimeout(() => {
-          window.location.reload();
-        }, 1000);
+        authCtx.onLogin(res.data.token, res.data.user);
       })
       .catch((err) => {
         console.error(err);
