@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import Auth from "./components/Auth/Auth";
@@ -10,27 +10,18 @@ import ErrorPage from "./components/Error/ErrorPage";
 import Home from "./components/Home/Home";
 import Navbar from "./components/Navbar/Navbar";
 import StudentHome from "./pages/StudentHome";
+import AuthContext from "./store/auth-context";
+import Message from "./components/Message/Message";
 
 const App = () => {
-  const [token, setToken] = useState(null);
-  const [role, setRole] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  useEffect(() => {
-    setToken(localStorage.getItem("token"));
-    setRole(localStorage.getItem("role"));
-    if (token) {
-      const decodedJwt = JSON.parse(atob(token.split(".")[1]));
-      if (decodedJwt.exp * 1000 > Date.now()) {
-        setIsAuthenticated(true);
-      }
-    }
-  }, [token]);
+  const authCtx = useContext(AuthContext);
   const router = createBrowserRouter([
     {
       path: "/",
-      element: isAuthenticated ? (
+      element: authCtx.isLoggedIn ? (
         <>
-          <Navbar /> {role === "teacher" ? <Home /> : <StudentHome />}
+          <Navbar />
+          {authCtx.user?.role === "teacher" ? <Home /> : <StudentHome />}
         </>
       ) : (
         <Auth />
@@ -39,7 +30,7 @@ const App = () => {
     },
     {
       path: "courses",
-      element: isAuthenticated ? (
+      element: authCtx.isLoggedIn ? (
         <>
           <Navbar />
           <Course />
@@ -49,8 +40,19 @@ const App = () => {
       ),
     },
     {
+      path: "messages",
+      element: authCtx.isLoggedIn ? (
+        <>
+          <Navbar />
+          <Message />
+        </>
+      ) : (
+        <Auth />
+      ),
+    },
+    {
       path: "course/:courseId",
-      element: isAuthenticated ? (
+      element: authCtx.isLoggedIn ? (
         <>
           <Navbar />
           <SingleCourse />
@@ -60,8 +62,8 @@ const App = () => {
       ),
     },
     {
-      path: "Classes/:courseId",
-      element: isAuthenticated ? (
+      path: "classes/:courseId",
+      element: authCtx.isLoggedIn ? (
         <>
           <Navbar />
           <Class />
@@ -71,8 +73,8 @@ const App = () => {
       ),
     },
     {
-      path: "Class/:classId",
-      element: isAuthenticated ? (
+      path: "class/:classId",
+      element: authCtx.isLoggedIn ? (
         <>
           <Navbar />
           <SingleClass />

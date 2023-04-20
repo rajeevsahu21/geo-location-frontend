@@ -12,7 +12,7 @@ import CalendarViewMonthIcon from "@mui/icons-material/CalendarViewMonth";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import LockIcon from "@mui/icons-material/Lock";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
-import Axios from "../../api";
+import useAxios from "../../api";
 import {
   Alert,
   Box,
@@ -45,6 +45,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 const Course = () => {
+  const Axios = useAxios();
   const navigate = useNavigate();
   const [courses, setCourses] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
@@ -133,7 +134,9 @@ const Course = () => {
       <Box
         sx={{
           display: "flex",
+          height: "90vh",
           justifyContent: "center",
+          alignItems: "center",
         }}
       >
         <CircularProgress />

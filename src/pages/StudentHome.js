@@ -10,7 +10,7 @@ import Paper from "@mui/material/Paper";
 import AddTaskIcon from "@mui/icons-material/AddTask";
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
-import Axios from "../api";
+import useAxios from "../api";
 import {
   Alert,
   Box,
@@ -42,6 +42,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 const StudentHome = () => {
+  const Axios = useAxios();
   const [courses, setCourses] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const [showAlert, setShowAlert] = React.useState(false);
@@ -141,7 +142,9 @@ const StudentHome = () => {
       <Box
         sx={{
           display: "flex",
+          height: "90vh",
           justifyContent: "center",
+          alignItems: "center",
         }}
       >
         <CircularProgress />
@@ -185,7 +188,7 @@ const StudentHome = () => {
               <StyledTableCell sx={{ fontWeight: 700 }}>
                 Course Name
               </StyledTableCell>
-              <StyledTableCell sx={{ fontWeight: 700 }}>
+              <StyledTableCell sx={{ fontWeight: 700 }} align="right">
                 Mark Attendance
               </StyledTableCell>
             </TableRow>
@@ -196,7 +199,7 @@ const StudentHome = () => {
                 <StyledTableCell component="th" scope="row">
                   {row.courseName}
                 </StyledTableCell>
-                <StyledTableCell>
+                <StyledTableCell align="right">
                   <Button
                     disabled={markBtn ? true : row.activeClass ? false : true}
                     variant="contained"
@@ -212,7 +215,7 @@ const StudentHome = () => {
           </TableBody>
         </Table>
       </TableContainer>
-      <Box sx={{ "& > :not(style)": { m: 5, mt: 4 } }}>
+      <Box sx={{ position: "fixed", right: "40px", bottom: "40px" }}>
         <Fab
           onClick={() => setShowEnrollCourseModal(true)}
           color="primary"

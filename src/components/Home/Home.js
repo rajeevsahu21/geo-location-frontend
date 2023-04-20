@@ -12,7 +12,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
-import Axios from "../../api";
+import useAxios from "../../api";
 import {
   Alert,
   Box,
@@ -44,6 +44,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 const Home = () => {
+  const Axios = useAxios();
   const [courses, setCourses] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const [showAlert, setShowAlert] = React.useState(false);
@@ -194,7 +195,9 @@ const Home = () => {
       <Box
         sx={{
           display: "flex",
+          height: "90vh",
           justifyContent: "center",
+          alignItems: "center",
         }}
       >
         <CircularProgress />
@@ -326,7 +329,7 @@ const Home = () => {
           </TableBody>
         </Table>
       </TableContainer>
-      <Box sx={{ "& > :not(style)": { m: 5, mt: 4 } }}>
+      <Box sx={{ position: "fixed", right: "40px", bottom: "40px" }}>
         <Fab
           onClick={() => setShowCourseModal(true)}
           color="primary"
