@@ -18,7 +18,9 @@ import {
   Snackbar,
   Typography,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import useAxios from "../api";
+import EditUserModal from "../components/Modal/EditUserModal";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -41,6 +43,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function AdminHome({ searchTerm }) {
+  const navigate = useNavigate();
   const Axios = useAxios();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(15);
@@ -50,7 +53,8 @@ export default function AdminHome({ searchTerm }) {
   const [showAlert, setShowAlert] = React.useState(false);
   const [alertMessage, setAlertMessage] = React.useState(null);
   const [isError, setIsError] = React.useState(false);
-  const [userId, setUserId] = React.useState(null);
+  const [user, setUser] = React.useState(null);
+  const [showModal, setShowModal] = React.useState(false);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -59,6 +63,31 @@ export default function AdminHome({ searchTerm }) {
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
+  };
+
+  const updateUserHandler = async () => {
+    setShowModal(false);
+    await Axios({
+      url: `/user/detail`,
+      method: "PUT",
+      data: {
+        userId: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+    })
+      .then((res) => {
+        setIsError(false);
+        setShowAlert(true);
+        setAlertMessage(res.data.message);
+      })
+      .catch((err) => {
+        setIsError(true);
+        setShowAlert(true);
+        setAlertMessage(err.response.data.message);
+      });
+    getUsers();
   };
 
   const getUsers = async () => {
@@ -105,6 +134,8 @@ export default function AdminHome({ searchTerm }) {
           height: "90vh",
           justifyContent: "center",
           alignItems: "center",
+          mr: 10,
+          ml: 10,
         }}
       >
         <Typography variant="h2" component="h2">
@@ -130,6 +161,20 @@ export default function AdminHome({ searchTerm }) {
           {alertMessage}
         </Alert>
       </Snackbar>
+      {showModal && (
+        <EditUserModal
+          open={showModal}
+          setOpen={setShowModal}
+          onSuccess={updateUserHandler}
+          user={user}
+          setUser={setUser}
+          title="Update User"
+          label="Name"
+          label1="Email Address"
+          successButton="Update"
+          content="Change Any Field to Update User Details"
+        />
+      )}
       <TableContainer sx={{ maxHeight: "83.6vh" }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
@@ -160,7 +205,8 @@ export default function AdminHome({ searchTerm }) {
                 <StyledTableCell align="right">
                   <Button
                     onClick={() => {
-                      setUserId(row._id);
+                      setUser(row);
+                      setShowModal(true);
                     }}
                   >
                     <EditIcon />
@@ -169,7 +215,9 @@ export default function AdminHome({ searchTerm }) {
                 <StyledTableCell align="right">
                   <Button
                     onClick={() => {
-                      setUserId(row._id);
+                      navigate(`/courses`, {
+                        state: { userId: row._id, role: row.role },
+                      });
                     }}
                   >
                     <ArrowForwardIosIcon />

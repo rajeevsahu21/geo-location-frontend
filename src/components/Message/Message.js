@@ -8,6 +8,7 @@ const Message = () => {
         height: "90vh",
         justifyContent: "center",
         alignItems: "center",
+        margin: "0 10px 0 10px",
       }}
     >
       This Feature is Comming Soon...

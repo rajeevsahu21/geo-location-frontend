@@ -14,6 +14,7 @@ import AuthContext from "./store/auth-context";
 import Message from "./components/Message/Message";
 import AdminNavbar from "./components/Navbar/AdminNavbar";
 import AdminHome from "./pages/AdminHome";
+import UserCourses from "./pages/UserCourses";
 
 const App = () => {
   const authCtx = useContext(AuthContext);
@@ -45,8 +46,17 @@ const App = () => {
       path: "courses",
       element: authCtx.isLoggedIn ? (
         <>
-          <Navbar />
-          <Course />
+          {authCtx.user?.role === "admin" ? (
+            <>
+              <AdminNavbar setSearchTerm={setSearchTerm} />
+              <UserCourses />
+            </>
+          ) : (
+            <>
+              <Navbar />
+              <Course />
+            </>
+          )}
         </>
       ) : (
         <Auth />
