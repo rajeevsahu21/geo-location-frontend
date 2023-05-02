@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import Auth from "./components/Auth/Auth";
@@ -12,16 +12,29 @@ import Navbar from "./components/Navbar/Navbar";
 import StudentHome from "./pages/StudentHome";
 import AuthContext from "./store/auth-context";
 import Message from "./components/Message/Message";
+import AdminNavbar from "./components/Navbar/AdminNavbar";
+import AdminHome from "./pages/AdminHome";
 
 const App = () => {
   const authCtx = useContext(AuthContext);
+  const [searchTerm, setSearchTerm] = useState("");
   const router = createBrowserRouter([
     {
       path: "/",
       element: authCtx.isLoggedIn ? (
         <>
-          <Navbar />
-          {authCtx.user?.role === "teacher" ? <Home /> : <StudentHome />}
+          {authCtx.user?.role === "admin" ? (
+            <AdminNavbar setSearchTerm={setSearchTerm} />
+          ) : (
+            <Navbar />
+          )}
+          {authCtx.user?.role === "teacher" ? (
+            <Home />
+          ) : authCtx.user?.role === "admin" ? (
+            <AdminHome searchTerm={searchTerm} />
+          ) : (
+            <StudentHome />
+          )}
         </>
       ) : (
         <Auth />
