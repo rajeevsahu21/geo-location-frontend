@@ -15,6 +15,7 @@ import Message from "./components/Message/Message";
 import AdminNavbar from "./components/Navbar/AdminNavbar";
 import AdminHome from "./pages/AdminHome";
 import UserCourses from "./pages/UserCourses";
+import ProfilePage from "./pages/ProfilePage";
 
 const App = () => {
   const authCtx = useContext(AuthContext);
@@ -101,6 +102,21 @@ const App = () => {
         <>
           <Navbar />
           <SingleClass />
+        </>
+      ) : (
+        <Auth />
+      ),
+    },
+    {
+      path: "me",
+      element: authCtx.isLoggedIn ? (
+        <>
+          {authCtx.user?.role === "admin" ? (
+            <AdminNavbar setSearchTerm={setSearchTerm} />
+          ) : (
+            <Navbar />
+          )}
+          <ProfilePage />
         </>
       ) : (
         <Auth />
