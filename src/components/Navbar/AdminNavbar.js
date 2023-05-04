@@ -135,7 +135,12 @@ export default function AdminNavbar({ setSearchTerm }) {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              <MenuItem onClick={handleCloseUserMenu}>
+              <MenuItem
+                onClick={() => {
+                  handleCloseUserMenu();
+                  navigate("/me");
+                }}
+              >
                 <Typography textAlign="center">Profile</Typography>
               </MenuItem>
               <MenuItem

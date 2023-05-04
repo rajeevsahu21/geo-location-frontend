@@ -4,6 +4,7 @@ import useAxios from "../api";
 const AuthContext = React.createContext({
   isLoggedIn: false,
   user: {},
+  setUser: (user) => {},
   token: null,
   onLogin: (token, user) => {},
   onLogout: () => {},
@@ -45,6 +46,7 @@ export const AuthContextProvider = (props) => {
       value={{
         isLoggedIn: isLoggedIn,
         user: user,
+        setUser: setUser,
         token: token,
         onLogin: loginHandler,
         onLogout: logoutHandler,
