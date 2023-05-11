@@ -56,8 +56,7 @@ const Class = () => {
     setShowAlertModal(false);
     await Axios({
       method: "delete",
-      url: "/deleteClassById",
-      params: { classId },
+      url: `/class/${classId}`,
     })
       .then((res) => {
         setIsError(false);
@@ -73,7 +72,7 @@ const Class = () => {
   };
 
   const getClasses = async () => {
-    await Axios({ url: "/getClassesByCourseId", params: { courseId } })
+    await Axios({ url: "/class", params: { courseId } })
       .then((res) => {
         setClasses(res.data.data);
       })
