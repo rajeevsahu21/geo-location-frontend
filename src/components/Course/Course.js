@@ -57,7 +57,8 @@ const Course = () => {
 
   const sendAttendance = async (course) => {
     await Axios({
-      url: "/sendAttendanceViaMail",
+      method: "post",
+      url: "/course/attendance",
       params: { courseId: course._id },
     })
       .then((res) => {
@@ -76,8 +77,7 @@ const Course = () => {
     setShowAlertModal(false);
     await Axios({
       method: "delete",
-      url: "/deleteCourseById",
-      params: { courseId },
+      url: `/course/${courseId}`,
     })
       .then((res) => {
         setIsError(false);
@@ -94,10 +94,9 @@ const Course = () => {
 
   const toggleCourseEnrollment = async (course, toggle) => {
     await Axios({
-      method: "post",
-      url: "/toggleCourseEnrollment",
+      method: "put",
+      url: `/course/${course._id}`,
       data: {
-        courseId: course._id,
         toggle,
       },
     })
@@ -114,7 +113,7 @@ const Course = () => {
     getCourses();
   };
   const getCourses = async () => {
-    await Axios("/getCourses")
+    await Axios("/course")
       .then((res) => {
         setCourses(res.data.data);
       })

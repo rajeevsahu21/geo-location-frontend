@@ -71,7 +71,7 @@ const Home = () => {
     formData.append("emails", fileUploaded);
     await Axios({
       method: "post",
-      url: "/inviteStudentsToEnrollCourse",
+      url: "/course/invite",
       data: formData,
     })
       .then((res) => {
@@ -96,7 +96,7 @@ const Home = () => {
     setShowCourseModal(false);
     await Axios({
       method: "post",
-      url: "/createCourse",
+      url: "/course",
       data: { courseName },
     })
       .then((res) => {
@@ -125,7 +125,7 @@ const Home = () => {
       async (position) => {
         await Axios({
           method: "post",
-          url: "/startClass",
+          url: "/class",
           data: {
             courseId,
             radius,
@@ -157,8 +157,8 @@ const Home = () => {
   };
   const endClassHandler = async (course) => {
     await Axios({
-      method: "post",
-      url: "/dismissClass",
+      method: "put",
+      url: "/class",
       data: { courseId: course._id },
     })
       .then((res) => {
@@ -175,7 +175,7 @@ const Home = () => {
   };
 
   const getCourses = async () => {
-    await Axios("/getCourses")
+    await Axios("/course")
       .then((res) => {
         setCourses(res.data.data);
       })

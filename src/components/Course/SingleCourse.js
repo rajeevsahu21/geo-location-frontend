@@ -52,7 +52,7 @@ const SingleCourse = () => {
   const [showAlertModal, setShowAlertModal] = React.useState(false);
 
   const getCourse = async () => {
-    await Axios({ url: "/getCourseById", params: { courseId } })
+    await Axios({ url: `/course/${courseId}` })
       .then((res) => {
         setStudents(res.data.data.students);
       })

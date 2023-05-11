@@ -58,8 +58,8 @@ const StudentHome = () => {
       async (position) => {
         setMarkBtn(true);
         await Axios({
-          method: "post",
-          url: "/markAttendance",
+          method: "put",
+          url: "/class",
           data: {
             courseId,
             location: {
@@ -100,7 +100,7 @@ const StudentHome = () => {
     setShowEnrollCourseModal(false);
     await Axios({
       method: "post",
-      url: "/enrollCourse",
+      url: "/course/enroll",
       data: { courseCode },
     })
       .then((res) => {
@@ -118,7 +118,7 @@ const StudentHome = () => {
   };
 
   const getCourses = async () => {
-    await Axios("/getCourses")
+    await Axios("/course")
       .then((res) => {
         setCourses(res.data.data);
       })
