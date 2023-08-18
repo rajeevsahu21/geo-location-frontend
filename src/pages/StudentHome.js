@@ -10,6 +10,7 @@ import Paper from "@mui/material/Paper";
 import AddTaskIcon from "@mui/icons-material/AddTask";
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
+import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import useAxios from "../api";
 import {
   Alert,
@@ -117,6 +118,24 @@ const StudentHome = () => {
     getCourses();
   };
 
+  const leaveCourseHandler = async (courseId) => {
+    await Axios({
+      method: "put",
+      url: `/course/${courseId}`,
+    })
+      .then((res) => {
+        setIsError(false);
+        setShowAlert(true);
+        setAlertMessage(res.data.message);
+      })
+      .catch((err) => {
+        setIsError(true);
+        setShowAlert(true);
+        setAlertMessage(err.response.data.message);
+      });
+    getCourses();
+  };
+
   const getCourses = async () => {
     await Axios("/course")
       .then((res) => {
@@ -191,6 +210,9 @@ const StudentHome = () => {
               <StyledTableCell sx={{ fontWeight: 700 }} align="right">
                 Mark Attendance
               </StyledTableCell>
+              <StyledTableCell sx={{ fontWeight: 700 }} align="right">
+                Leave Course
+              </StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -208,6 +230,16 @@ const StudentHome = () => {
                     }}
                   >
                     <AddTaskIcon />
+                  </Button>
+                </StyledTableCell>
+                <StyledTableCell align="right">
+                  <Button
+                    color="error"
+                    onClick={() => {
+                      leaveCourseHandler(row._id);
+                    }}
+                  >
+                    <RemoveCircleOutlineIcon />
                   </Button>
                 </StyledTableCell>
               </StyledTableRow>
