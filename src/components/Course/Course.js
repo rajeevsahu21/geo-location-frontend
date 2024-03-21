@@ -10,8 +10,7 @@ import Paper from "@mui/material/Paper";
 import ForwardToInboxIcon from "@mui/icons-material/ForwardToInbox";
 import CalendarViewMonthIcon from "@mui/icons-material/CalendarViewMonth";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import LockIcon from "@mui/icons-material/Lock";
-import LockOpenIcon from "@mui/icons-material/LockOpen";
+import EditIcon from "@mui/icons-material/Edit";
 import useAxios from "../../api";
 import {
   Alert,
@@ -23,6 +22,7 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import AlertModal from "../Modal/AlertModal";
+import EditCourseModal from "../Modal/EditCourseModal";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -52,8 +52,9 @@ const Course = () => {
   const [showAlert, setShowAlert] = React.useState(false);
   const [alertMessage, setAlertMessage] = React.useState(null);
   const [isError, setIsError] = React.useState(false);
-  const [courseId, setCourseId] = React.useState(null);
+  const [course, setCourse] = React.useState(null);
   const [showAlertModal, setShowAlertModal] = React.useState(false);
+  const [showEditModal, setShowEditModal] = React.useState(false);
 
   const sendAttendance = async (course) => {
     await Axios({
@@ -77,7 +78,7 @@ const Course = () => {
     setShowAlertModal(false);
     await Axios({
       method: "delete",
-      url: `/course/${courseId}`,
+      url: `/course/${course._id}`,
     })
       .then((res) => {
         setIsError(false);
@@ -92,12 +93,14 @@ const Course = () => {
     getCourses();
   };
 
-  const toggleCourseEnrollment = async (course, toggle) => {
+  const editCourseHandler = async () => {
+    setShowEditModal(false);
     await Axios({
       method: "put",
       url: `/course/${course._id}`,
       data: {
-        toggle,
+        toggle: course.isActive,
+        courseName: course.courseName,
       },
     })
       .then((res) => {
@@ -169,6 +172,20 @@ const Course = () => {
           onSuccess={deleteCourseHandler}
         />
       )}
+      {showEditModal && (
+        <EditCourseModal
+          open={showEditModal}
+          setOpen={setShowEditModal}
+          onSuccess={editCourseHandler}
+          course={course}
+          setCourse={setCourse}
+          title="Update Course"
+          label="Name"
+          label1="Course Active"
+          successButton="Update"
+          content="Change Any Field to Update Course Details"
+        />
+      )}
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 300 }} aria-label="customized table">
           <TableHead>
@@ -186,7 +203,7 @@ const Course = () => {
                 Students
               </StyledTableCell>
               <StyledTableCell sx={{ fontWeight: 700 }}>
-                Toogle Enrollment
+                Edit Course
               </StyledTableCell>
               <StyledTableCell sx={{ fontWeight: 700 }}>
                 Delete Course
@@ -229,18 +246,17 @@ const Course = () => {
                 <StyledTableCell>
                   <Button
                     onClick={() => {
-                      row.isActive
-                        ? toggleCourseEnrollment(row, false)
-                        : toggleCourseEnrollment(row, true);
+                      setCourse(row);
+                      setShowEditModal(true);
                     }}
                   >
-                    {row.isActive ? <LockOpenIcon /> : <LockIcon />}
+                    <EditIcon />
                   </Button>
                 </StyledTableCell>
                 <StyledTableCell>
                   <Button
                     onClick={() => {
-                      setCourseId(row._id);
+                      setCourse(row);
                       setShowAlertModal(true);
                     }}
                   >
