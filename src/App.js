@@ -20,6 +20,11 @@ import ProfilePage from "./pages/ProfilePage";
 const App = () => {
   const authCtx = useContext(AuthContext);
   const [searchTerm, setSearchTerm] = useState("");
+
+  if (!authCtx.isLoggedIn) {
+    return <Auth />;
+  }
+
   const router = createBrowserRouter([
     {
       path: "/",
